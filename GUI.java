@@ -87,6 +87,7 @@ public final class GUI extends JFrame implements ActionListener {
         setJMenuBar(createMainMenuBar());
         setContentPane(createMainContentPane());
         pack();
+        //next line forces maximezed window
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
@@ -128,9 +129,9 @@ public final class GUI extends JFrame implements ActionListener {
         JButton leftPanelNewButton = new JButton("New");
         leftPanelNewButton.addActionListener(actionEvent -> mainAgent.newGame());
         JButton leftPanelStopButton = new JButton("Stop");
-        leftPanelStopButton.addActionListener(this);
+        leftPanelStopButton.addActionListener(actionEvent -> mainAgent.stopGame());
         JButton leftPanelContinueButton = new JButton("Continue");
-        leftPanelContinueButton.addActionListener(this);
+        leftPanelContinueButton.addActionListener(actionEvent -> mainAgent.continueGame());
         JButton updatePlayersButton = new JButton("Update players");
         updatePlayersButton.addActionListener(actionEvent -> mainAgent.updatePlayers());
 
@@ -159,7 +160,6 @@ public final class GUI extends JFrame implements ActionListener {
             }
         };
 
-        // Crea el JScrollPane con la tabla
         JScrollPane tableScrollPane = new JScrollPane(rankingTable);
 
         gc.fill = GridBagConstraints.BOTH;
@@ -173,7 +173,6 @@ public final class GUI extends JFrame implements ActionListener {
         leftPanel.add(leftPanelNewButton, gc);
         gc.gridy = 2;
         leftPanel.add(leftPanelStopButton, gc);     
-        // Agregar espacio entre la etiqueta y la tabla utilizando Insets
         gc.gridy = 3;
         leftPanel.add(leftPanelContinueButton, gc);
         gc.gridy = 4;
@@ -187,6 +186,8 @@ public final class GUI extends JFrame implements ActionListener {
         return leftPanel;
     }
 
+
+    //method to update the table when called
     public void updateTableData() {
         Object[][] playerData = mainAgent.getPlayerData();
         tableModel.setDataVector(playerData, new String[]{"Puesto", "Name", "Points"});
@@ -231,6 +232,7 @@ public final class GUI extends JFrame implements ActionListener {
         list.setSelectedIndex(0);
         list.setVisibleRowCount(5);
         JScrollPane listScrollPane = new JScrollPane(list);
+        //it will show stats and history of the player selected
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedPlayer = (String) list.getSelectedValue();
@@ -321,146 +323,45 @@ public final class GUI extends JFrame implements ActionListener {
     
     
 
-    
-    
-    
-    
-
-    /* private JPanel createCentralBottomSubpanel() {
-
-        Object[][] gameHistory = {
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"}
-        };
-        JPanel centralBottomSubpanel = new JPanel(new GridBagLayout());
-
-        JLabel payoffLabel = new JLabel("Player Results");
-        String[] columnNames = {"Order", "Player Points", "Opponent Points", "Winner"};
-
-        
-
-
-        
-        historyTableModel= new DefaultTableModel(gameHistory, columnNames);
-        histoyJTable = new JTable(historyTableModel);
-
-
-        JScrollPane playerScrollPane = new JScrollPane(histoyJTable);
-
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.weightx = 0.5;
-        gc.fill = GridBagConstraints.BOTH;
-        gc.anchor = GridBagConstraints.FIRST_LINE_START;
-
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.weighty = 0.5;
-        centralBottomSubpanel.add(payoffLabel, gc);
-        gc.gridy = 1;
-        gc.gridx = 0;
-        gc.weighty = 2;
-        centralBottomSubpanel.add(playerScrollPane, gc);
-
-        return centralBottomSubpanel;
-    } 
-
-    private void setResultsData(String playerName) {
-        Object[][] gameHistory = mainAgent.getGameHistory(playerName);
-        
-        historyTableModel.setDataVector(gameHistory, new String[]{"Order", "Player Points", "Opponent Points", "Winner"});
-        historyTableModel.fireTableDataChanged();
-        
-    } */
-
-    /* private JPanel createCentralBottomSubpanel() {
-        JPanel centralBottomSubpanel = new JPanel(new GridBagLayout());
-
-        Object[] nullPointerWorkAround = {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"};
-
-        Object[][] data = {
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"},
-                {"*", "*", "*", "*", "*", "*", "*", "*", "*", "*"}
-        };
-
-        JLabel payoffLabel = new JLabel("Player Results");
-        JTable payoffTable = new JTable(data, nullPointerWorkAround);
-        payoffTable.setTableHeader(null);
-        payoffTable.setEnabled(false);
-        
-        JScrollPane player1ScrollPane = new JScrollPane(payoffTable);
-
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.weightx = 0.5;
-        gc.fill = GridBagConstraints.BOTH;
-        gc.anchor = GridBagConstraints.FIRST_LINE_START;
-
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.weighty = 0.5;
-        centralBottomSubpanel.add(payoffLabel, gc);
-        gc.gridy = 1;
-        gc.gridx = 0;
-        gc.weighty = 2;
-        centralBottomSubpanel.add(player1ScrollPane, gc);
-
-        return centralBottomSubpanel;
-    }  */
-
 
     private JTable payoffTable;
     private JScrollPane player1ScrollPane;
     private DefaultTableModel tableModel2;
-    private String[] columnNames = {"Results", "Results", "Results", "Results", "Results", "Results"};
+    private String[] columnNames = {"Results", "Results", "Results", "Results", "Results", "Results"}; //it is just to set the number of columns
     
-   private void initializeBottomSubpanel() {
-    centralBottomSubpanel = new JPanel(new GridBagLayout());
 
-    Object[][] initialData = getEmptyTableData(); // Método para obtener datos iniciales vacíos
-    tableModel2 = new DefaultTableModel(initialData, columnNames);
-    payoffTable = new JTable(tableModel2);
-    payoffTable.setTableHeader(null);
-    payoffTable.setEnabled(false);
+    //this panel shows the history of the player selected
+    private void initializeBottomSubpanel() {
+        centralBottomSubpanel = new JPanel(new GridBagLayout());
 
-    player1ScrollPane = new JScrollPane(payoffTable);
+        Object[][] initialData = getEmptyTableData(); // Método para obtener datos iniciales vacíos
+        tableModel2 = new DefaultTableModel(initialData, columnNames);
+        payoffTable = new JTable(tableModel2);
+        payoffTable.setTableHeader(null);
+        payoffTable.setEnabled(false);
 
-    GridBagConstraints gc = new GridBagConstraints();
-    gc.weightx = 0.5;
-    gc.fill = GridBagConstraints.BOTH;
-    gc.anchor = GridBagConstraints.FIRST_LINE_START;
+        player1ScrollPane = new JScrollPane(payoffTable);
 
-    gc.gridx = 0;
-    gc.gridy = 0;
-    gc.weighty = 0.5;
-    centralBottomSubpanel.add(new JLabel("Player Results"), gc); // Etiqueta de resultados
-    gc.gridy = 1;
-    gc.weighty = 2;
-    centralBottomSubpanel.add(player1ScrollPane, gc); // Tabla de resultados
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.weightx = 0.5;
+        gc.fill = GridBagConstraints.BOTH;
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
 
-    // Definir el diseño de la tabla para que muestre las celdas en filas
-    payoffTable.setCellSelectionEnabled(true);
-    payoffTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    payoffTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    payoffTable.setRowHeight(40); // Altura de cada fila
-    payoffTable.setColumnSelectionAllowed(false);
-}
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.weighty = 0.5;
+        centralBottomSubpanel.add(new JLabel("Player Results"), gc); // Etiqueta de resultados
+        gc.gridy = 1;
+        gc.weighty = 2;
+        centralBottomSubpanel.add(player1ScrollPane, gc); // Tabla de resultados
+
+        // Definir el diseño de la tabla para que muestre las celdas en filas
+        payoffTable.setCellSelectionEnabled(true);
+        payoffTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        payoffTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        payoffTable.setRowHeight(40); // Altura de cada fila
+        payoffTable.setColumnSelectionAllowed(false);
+    }
 
 private void updateTable(String playerName) {
     Object[][] gameHistory = mainAgent.getGameHistory(playerName);
@@ -499,7 +400,7 @@ private void updateTable(String playerName) {
 
     for (int i = 0; i < columnNames.length; i++) {
     TableColumn column = payoffTable.getColumnModel().getColumn(i);
-    column.setPreferredWidth(100); // Cambia este valor según sea necesario para ajustar el ancho de las celdas
+    column.setPreferredWidth(100); // Cambia este valor según sea necesario para ajustar el ancho de las celdas, con nombre corto está bien en 100
     
     }
     // Renderizador de celdas personalizado para cambiar el color de fondo
@@ -524,7 +425,7 @@ private void updateTable(String playerName) {
                             comp.setBackground(Color.GREEN); // Gana el jugador
                         } else {
                             if (playerPoints < opponentPoints) {
-                                                            comp.setBackground(Color.RED); // Pierde el jugador o empate
+                                comp.setBackground(Color.RED); // Pierde el jugador o empate
 
                             } else {
                                 comp.setBackground(Color.YELLOW); // Empate
@@ -556,7 +457,7 @@ private int calculateRowCount(Object[][] gameHistory) {
     }
     return rows;
 }
-
+//muestra la tabla vacia con astericos
 private Object[][] getEmptyTableData() {
     Object[][] initialData = new Object[10][columnNames.length];
     for (int i = 0; i < initialData.length; i++) {
@@ -603,7 +504,7 @@ private Object[][] getEmptyTableData() {
             int selectedIndex = list.getSelectedIndex();
             if (selectedIndex != -1) {
                 String selectedPlayer = model.getElementAt(selectedIndex);
-                model.remove(selectedIndex); // Elimina el jugador de la lista visual
+                model.remove(selectedIndex); // Elimina el jugador seleccionado de la lista visual
                 mainAgent.removePlayerAgent(selectedPlayer);
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a player to remove.");
@@ -618,15 +519,15 @@ private Object[][] getEmptyTableData() {
 
         JMenuItem newRunMenu = new JMenuItem("New");
         newRunMenu.setToolTipText("Starts a new series of games");
-        newRunMenu.addActionListener(this);
+        newRunMenu.addActionListener(actionEvent -> mainAgent.newGame());
 
         JMenuItem stopRunMenu = new JMenuItem("Stop");
-        stopRunMenu.setToolTipText("Stops the execution of the current round");
-        stopRunMenu.addActionListener(this);
+        stopRunMenu.setToolTipText("Stops the execution at the current round");
+        stopRunMenu.addActionListener(actionEvent -> mainAgent.stopGame());
 
         JMenuItem continueRunMenu = new JMenuItem("Continue");
         continueRunMenu.setToolTipText("Resume the execution");
-        continueRunMenu.addActionListener(this);
+        continueRunMenu.addActionListener(actionEvent -> mainAgent.continueGame());
 
         
 
@@ -656,7 +557,7 @@ private Object[][] getEmptyTableData() {
         JMenu helpMenu = new JMenu("Help");
         JMenuItem aboutMenuItem = new JMenuItem("About");
         aboutMenuItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Author: Juan Ponton Rodriguez", "About", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Author: Juan Ponton Rodriguez ID:26", "About", JOptionPane.INFORMATION_MESSAGE);
         }); 
         helpMenu.add(aboutMenuItem);
 

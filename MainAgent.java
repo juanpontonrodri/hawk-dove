@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -25,6 +26,9 @@ public class MainAgent extends Agent {
     private GameParametersStruct parameters = new GameParametersStruct();
     int gamesPlayed = 0;
     private long roundsPlayed = 0;
+
+    private Semaphore semaphore = new Semaphore(1);
+    //sem to stop and coninue the game
 
     @Override
     protected void setup() {
@@ -121,6 +125,9 @@ public class MainAgent extends Agent {
 
 
             for (int i = 0; i < parameters.R; i++) {
+
+                
+                    semaphore.acquireUninterruptibly();
                 
             
                 char act1, act2;
@@ -156,6 +163,8 @@ public class MainAgent extends Agent {
 
                 msg.setContent("Results#" + player1.id + "," + player2.id + "#" + act1 + "," + act2 + "#" + payoff[0] + "," + payoff[1]);
                 send(msg);
+
+                //We add the points to the players and rounds played, then we update the table
                 player1.points += payoff[0];
                 player2.points += payoff[1];
                 if(payoff[0]>payoff[1]){
@@ -173,6 +182,9 @@ public class MainAgent extends Agent {
                 roundsPlayed++;
                 gui.updateTableData();
 
+                semaphore.release();
+                
+
             }
             msg = new ACLMessage(ACLMessage.INFORM);
             msg.addReceiver(player1.aid);
@@ -180,6 +192,9 @@ public class MainAgent extends Agent {
 
             msg.setContent("GameOver#" + player1.id + "," + player2.id + "#" + results[0] + "," + results[1]);
             send(msg);
+
+            // Increment the win and loss counters for player1 and player2 based on the game results
+
             gamesPlayed++;
             player1.addGameResult(results[0], results[1], player2.aid.getName().split("@")[0]);
             player2.addGameResult(results[1], results[0], player1.aid.getName().split("@")[0]);
@@ -194,6 +209,7 @@ public class MainAgent extends Agent {
                 player2.draws++;}
             gui.updateParametersLabel();
             System.out.println("Main sent " + msg.getContent());
+
         }
 
 
@@ -205,6 +221,17 @@ public class MainAgent extends Agent {
         }
     }
 
+    public void stopGame() {
+            semaphore.acquireUninterruptibly();
+        
+    }
+
+    public void continueGame() {
+        semaphore.release();
+        
+    }
+
+    // Calculate the payoff for each player based on the actions they chose
     private int[] calculatePayoff(char actionPlayer1, char actionPlayer2) {
         int[] payoff = new int[2];
     
@@ -222,19 +249,14 @@ public class MainAgent extends Agent {
         return payoff;
     }
     
-    /* private void showResultsTable(int playerId, int opponentId, int playerPoints, int opponentPoints) {
-        // Asegúrate de tener una referencia válida a la interfaz gráfica (gui)
-        if (gui != null) {
-            // Llama al método de la GUI para actualizar los resultados en el tablero
-            gui.updateResultsTable(playerId, opponentId, playerPoints, opponentPoints);
-        }
-    } */
 
     
 
     public class PlayerInformation {
 
-        private static final int MAX_GAME_HISTORY = 200;
+        //here we will store the stats of the player and the history of the games
+
+        private static final int MAX_GAME_HISTORY = 100;
         private static final int GAME_RESULT_COLUMNS = 4;
 
         private AID aid;
@@ -347,6 +369,7 @@ public class MainAgent extends Agent {
         return data;
     }
 
+    //public methods to get the data of the players by name
     public Object[][] getGameHistory(String agentName) {
 
 
@@ -357,6 +380,8 @@ public class MainAgent extends Agent {
         }
         return null;
     }
+
+    //method to print the game history of a player, usefull for debugging or further applications
     public void printGameHistory(String agentName) {
     Object[][] gameHistory = getGameHistory(agentName);
 
