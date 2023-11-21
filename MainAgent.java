@@ -177,7 +177,7 @@ public class MainAgent extends Agent {
                     player1.rounds3++;
                     player2.rounds3++;}
                 
-                System.out.println("Main sent " + msg.getContent());
+                //System.out.println("Main sent " + msg.getContent());
 
                 roundsPlayed++;
                 gui.updateTableData();

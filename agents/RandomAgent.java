@@ -35,7 +35,7 @@ public class RandomAgent extends Agent {
             fe.printStackTrace();
         }
         addBehaviour(new Play());
-        System.out.println("RandomAgent " + getAID().getName() + " is ready.");
+        //System.out.println("RandomAgent " + getAID().getName() + " is ready.");
 
     }
 
@@ -46,7 +46,7 @@ public class RandomAgent extends Agent {
         } catch (FIPAException e) {
             e.printStackTrace();
         }
-        System.out.println("RandomPlayer " + getAID().getName() + " terminating.");
+        //System.out.println("RandomPlayer " + getAID().getName() + " terminating.");
     }
 
     private enum State {
@@ -57,7 +57,7 @@ public class RandomAgent extends Agent {
         Random random = new Random();
         @Override
         public void action() {
-            System.out.println(getAID().getName() + ":" + state.name());
+            //System.out.println(getAID().getName() + ":" + state.name());
             msg = blockingReceive();
             if (msg != null) {
                 //-------- Agent logic
@@ -70,13 +70,13 @@ public class RandomAgent extends Agent {
                             try {
                                 parametersUpdated = validateSetupMessage(msg);
                             } catch (NumberFormatException e) {
-                                System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
+                                //System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
                             }
                             if (parametersUpdated) state = State.s1AwaitingGame;
 
                         } else {
-                            System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
-                            System.out.println(msg.getContent());
+                            //System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
+                            //System.out.println(msg.getContent());
                         }
                         break;
                     case s1AwaitingGame:
@@ -89,7 +89,7 @@ public class RandomAgent extends Agent {
                                 try {
                                     validateSetupMessage(msg);
                                 } catch (NumberFormatException e) {
-                                    System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
+                                    //System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
                                 }
                             } else if (msg.getContent().startsWith("NewGame#")) {
                                 boolean gameStarted = false;
@@ -98,13 +98,13 @@ public class RandomAgent extends Agent {
                                     gameStarted = validateNewGame(msg.getContent());
                                 } catch (NumberFormatException e) {
 
-                                    System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
+                                    //System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
                                 }
                                 if (gameStarted) state = State.s2Round;
                             }
                         } else {
 
-                            System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
+                            //System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
                         }
                         break;
                     case s2Round:
@@ -117,7 +117,7 @@ public class RandomAgent extends Agent {
                             msg.addReceiver(mainAgent);
                             char randomAction = random.nextBoolean() ? 'H' : 'D'; // Genera aleatoriamente 'H' o 'D'
                             msg.setContent("Action#" + randomAction);
-                            System.out.println(getAID().getName() + " sent " + msg.getContent());
+                            //System.out.println(getAID().getName() + " sent " + msg.getContent());
                             send(msg);
 
                             state = State.s3AwaitingResult;
@@ -126,7 +126,7 @@ public class RandomAgent extends Agent {
                         } else if (msg.getPerformative() == ACLMessage.INFORM && msg.getContent().startsWith("GameOver#")) {
                             state = State.s1AwaitingGame;
                         } else {
-                            System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message:" + msg.getContent());
+                            //System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message:" + msg.getContent());
                         }
                         break;
                     case s3AwaitingResult:
@@ -136,7 +136,7 @@ public class RandomAgent extends Agent {
                             //Process results
                             state = State.s2Round;
                         } else {
-                            System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
+                            //System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
                         }
                         break;
                 }
