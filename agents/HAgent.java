@@ -9,9 +9,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
-import java.util.Random;
-
-public class RandomAgent extends Agent {
+public class HAgent extends Agent {
 
     private State state;
     private AID mainAgent;
@@ -35,7 +33,7 @@ public class RandomAgent extends Agent {
             fe.printStackTrace();
         }
         addBehaviour(new Play());
-        System.out.println("RandomAgent " + getAID().getName() + " is ready.");
+        System.out.println("DeterministicAgent " + getAID().getName() + " is ready to always play 'H'.");
 
     }
 
@@ -54,7 +52,6 @@ public class RandomAgent extends Agent {
     }
 
     private class Play extends CyclicBehaviour {
-        Random random = new Random();
         @Override
         public void action() {
             //System.out.println(getAID().getName() + ":" + state.name());
@@ -93,16 +90,13 @@ public class RandomAgent extends Agent {
                             } else if (msg.getContent().startsWith("NewGame#")) {
                                 boolean gameStarted = false;
                                 try {
-
                                     gameStarted = validateNewGame(msg.getContent());
                                 } catch (NumberFormatException e) {
-
                                     System.out.println(getAID().getName() + ":" + state.name() + " - Bad message");
                                 }
                                 if (gameStarted) state = State.s2Round;
                             }
                         } else {
-
                             System.out.println(getAID().getName() + ":" + state.name() + " - Unexpected message");
                         }
                         break;
@@ -114,11 +108,8 @@ public class RandomAgent extends Agent {
                         if (msg.getPerformative() == ACLMessage.REQUEST && msg.getContent().startsWith("Action")) {
                             ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                             msg.addReceiver(mainAgent);
-                            char randomAction = random.nextBoolean() ? 'H' : 'D'; // Genera aleatoriamente 'H' o 'D'
-                            msg.setContent("Action#" + randomAction);
-                            //System.out.println(getAID().getName() + " sent " + msg.getContent());
+                            msg.setContent("Action#H"); // Always send 'H' for 'Hawk'
                             send(msg);
-
                             state = State.s3AwaitingResult;
                         } else if (msg.getPerformative() == ACLMessage.INFORM && msg.getContent().startsWith("Changed#")) {
                             // Process changed message, in this case nothing

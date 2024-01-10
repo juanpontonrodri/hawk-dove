@@ -137,9 +137,9 @@ public class MainAgent extends Agent {
                 msg.addReceiver(player1.aid);
                 send(msg);
 
-                gui.logLine("Main Waiting for movement");
+                //gui.logLine("Main Waiting for movement");
                 ACLMessage move1 = blockingReceive();
-                gui.logLine("Main Received " + move1.getContent() + " from " + move1.getSender().getName());
+                //gui.logLine("Main Received " + move1.getContent() + " from " + move1.getSender().getName());
                 act1 = move1.getContent().split("#")[1].charAt(0);
 
                 msg = new ACLMessage(ACLMessage.REQUEST);
@@ -147,9 +147,9 @@ public class MainAgent extends Agent {
                 msg.addReceiver(player2.aid);
                 send(msg);
 
-                gui.logLine("Main Waiting for movement");
+                //gui.logLine("Main Waiting for movement");
                 ACLMessage move2 = blockingReceive();
-                gui.logLine("Main Received " + move1.getContent() + " from " + move1.getSender().getName());
+                //gui.logLine("Main Received " + move1.getContent() + " from " + move1.getSender().getName());
                 act2 = move2.getContent().split("#")[1].charAt(0);
 
                 int[] payoff = calculatePayoff((char) act1, (char) act2);
