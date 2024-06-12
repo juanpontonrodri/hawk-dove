@@ -13,17 +13,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.table.DefaultTableModel;
 
 public class MainAgent extends Agent {
 
     ArrayList<PlayerInformation> players = new ArrayList<>();
 
+    int rounds= 100;
+    int V=rounds;
+    int W=-2;
+    int X=7;
+    int Y=2;
+    int Z=9;
 
     private GUI gui;
     private AID[] playerAgents;
-    private GameParametersStruct parameters = new GameParametersStruct();
+    private GameParametersStruct parameters = new GameParametersStruct(V);
     int gamesPlayed = 0;
     private long roundsPlayed = 0;
 
@@ -210,6 +217,38 @@ public class MainAgent extends Agent {
             gui.updateParametersLabel();
             System.out.println("Main sent " + msg.getContent());
 
+
+
+           /*  String fileName = "results_" + parameters.R + "_" + W + "_" + X + "_" + Y + "_" + Z + ".txt";
+            try (FileWriter writer = new FileWriter(fileName)) {
+                writer.write("Resultados del torneo:\n");
+                writer.write("Número de rondas: " + parameters.R + "\n");
+                writer.write("Puntuaciones de la matriz: " + W + ", " + X + ", " + Y + ", " + Z + "\n");
+                // Aquí se podrían agregar más detalles sobre los resultados si es necesario
+                writer.write("\n");
+                writer.write("Resultados de los jugadores:\n");
+                writer.write("Nombre del jugador | Puntos | Victorias | Derrotas | Empates | Rondas ganadas con 1 punto | Rondas ganadas con 10 puntos | Rondas empatadas\n");
+                for (PlayerInformation player : players) {
+                    int[] stats = player.getstats();
+                    writer.write(player.aid.getName().split("@")[0] + " | " + player.points + " | " + stats[0] + " | " + stats[1] + " | " + stats[2] + " | " + stats[3] + " | " + stats[4] + " | " + stats[5] + "\n");
+                }
+                writer.write("\n");
+            } catch (IOException e) {
+                System.err.println("Error al guardar los resultados: " + e.getMessage());
+            } */
+
+            //Same but csv
+            String fileName = "results_" + parameters.R + "_" + W + "_" + X + "_" + Y + "_" + Z + ".csv";
+            try (FileWriter writer = new FileWriter(fileName)) {
+                writer.write("Nombre del jugador,Puntos,Victorias,Derrotas,Empates,Rondas ganadas con 1 punto,Rondas ganadas con 10 puntos,Rondas empatadas\n");
+                for (PlayerInformation player : players) {
+                    int[] stats = player.getstats();
+                    writer.write(player.aid.getName().split("@")[0] + "," + player.points + "," + stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5] + "\n");
+                }
+            } catch (IOException e) {
+                System.err.println("Error al guardar los resultados: " + e.getMessage());
+            }
+
         }
 
 
@@ -236,8 +275,8 @@ public class MainAgent extends Agent {
         int[] payoff = new int[2];
     
         int[][] payoffMatrix = {
-            {-1, 10},
-            {0, 5}
+            {W, X},
+            {Y, Z}
         };
     
         int indexPlayer1 = (actionPlayer1 == 'H') ? 0 : 1;
@@ -317,18 +356,31 @@ public class MainAgent extends Agent {
     public class GameParametersStruct {
 
         int N;
-        int R;
+        public int R;
 
-        public GameParametersStruct() {
+        public GameParametersStruct(int rounds ) {
             N = 2;
-            R = 1;
+            R = rounds;
+        }
+        // Getter y Setter para N
+        public int getN() {
+            return N;
         }
 
-        public void setR(int value) {
-            R = value;
+        public void setN(int N) {
+            this.N = N;
         }
-        
+
+        // Getter y Setter para R
+        public int getR() {
+            return R;
+        }
+
+        public void setR(int R) {
+            this.R = R;
+        }
     }
+        
 
     public GameParametersStruct getGameParameters() { //to be able to modify the parameters
         return parameters;

@@ -33,7 +33,7 @@ public class DAgent extends Agent {
             fe.printStackTrace();
         }
         addBehaviour(new Play());
-        System.out.println("DeterministicAgent " + getAID().getName() + " is ready to always play 'H'.");
+        System.out.println("DeterministicAgent " + getAID().getName() + " is ready to always play 'D'.");
 
     }
 

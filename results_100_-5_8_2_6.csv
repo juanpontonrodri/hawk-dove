@@ -1,0 +1,15 @@
+Nombre del jugador,Puntos,Victorias,Derrotas,Empates,Rondas ganadas con 1 punto,Rondas ganadas con 10 puntos,Rondas empatadas
+TFTAgent2,3348,3,2,8,215,214,871
+NN_Agent2,4697,6,5,2,364,372,564
+DAgent2,6100,0,12,1,0,425,875
+RandomAgent1,4242,8,4,1,369,282,649
+HAgent1,2522,11,0,2,694,0,606
+RLAgent2,5537,3,10,0,97,441,762
+AlternatingAgent1,4185,6,4,3,355,270,675
+NN_Agent1,4522,7,5,1,236,338,726
+TFTAgent1,3388,4,3,6,217,216,867
+RandomAgent2,3949,7,5,1,340,261,699
+HAgent2,2977,11,0,2,729,0,571
+RLAgent1,5417,2,11,0,81,441,778
+DAgent1,5684,0,10,3,0,529,771
+AlternatingAgent2,4186,6,3,4,352,260,688
