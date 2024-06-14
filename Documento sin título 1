@@ -1,0 +1,92 @@
+Para nuestra simulacion lo primero fue decidir el numero de rondas a usar, optamos por 100 ya que es un numero de rondas suficientemente alto como para que los algoritmos aprendan y apliquen sus estrategias. Ademas, entre 50,100 y 200 rondas los resultados para cada matriz eran muy similares.
+
+Definimos varios agentes para que fuera mas variada la simulacion:
+
+  AlternatingAgent.java: 
+
+AlternatingAgent alternates its actions between cooperating and defecting in each round. 
+
+  DAgent.java: 
+
+DAgent determinitic agent that always plays D. 
+
+  HAgent.java: 
+
+HAgent determinitic agent that always plays H. 
+
+  NN_Agent.java: 
+
+NN_Agent uses a neural network to decide its action based on the history of plays. 
+
+  RandomAgent.java: 
+
+RandomAgent selects its actions randomly in each round. 
+
+  RL_Agent.java: 
+
+RL_Agent uses reinforcement learning to optimize its strategy based on received rewards. 
+
+  TFT.java: 
+
+TFT (Tit for Tat) cooperates in the first round and then mimics the opponent's previous action. 
+
+Para la simulacion usamos dos agentes de cada tipo de los indicados y definimos varias matrices para comprobar los reusltados ocn cada una de ellas. Usamos una nomenclatura abreivada d el amatriz para representar mas faiclmente los valores de cad auna. El primer digito es la penalizacion por hacer H vs H, el segundo el beneificio de hacer H vs D, el tercero el benificoi de hacer D vs H y el ultimo el beneificio de hacer D vs D.
+
+Original Matrix: -1 10 0 5
+
+Description: This matrix represents the classical Hawk-Dove game. When both players choose Hawk (H), they both receive a penalty (-1). When one player chooses Hawk and the other chooses Dove (D), the Hawk gets a high reward (10) while the Dove gets nothing (0). When both choose Dove, they both get a moderate reward (5).
+Higher Penalty for Conflict (H, H): -5 8 2 6
+
+Description: This matrix increases the penalty for mutual Hawk (H) actions to discourage aggressive strategies. The reward for Hawk against Dove is slightly reduced (8 for Hawk, 2 for Dove), and cooperation (D, D) is rewarded with 6 points each.
+Incentive for Cooperation (D, D): -2 10 1 7
+
+Description: This configuration offers a higher reward for mutual Dove (D, D) actions (7 points each) to encourage cooperation. The Hawk (H) against Dove (D) scenario retains a high reward for Hawk (10) but gives a minimal reward (1) to Dove. The penalty for mutual Hawk actions is moderate (-2).
+Balanced Risk and Reward: -3 9 2 6
+
+Description: This matrix aims to balance the risk and reward by giving a significant penalty for mutual Hawk (H) actions (-3). The reward for Hawk against Dove is moderately high (9 for Hawk, 2 for Dove), and mutual Dove actions are rewarded fairly (6 points each).
+High Reward for Dove Action: -4 7 3 8
+
+Description: This configuration provides a high reward for mutual Dove (D, D) actions (8 points each) and a decent reward for Dove when facing Hawk (3 points). The penalty for mutual Hawk actions is substantial (-4), while Hawk against Dove still gives a reasonable reward (7).
+Conflict-Focused Matrix: -10 10 0 5
+
+Description: This matrix imposes a very high penalty for mutual Hawk (H) actions (-10) to significantly discourage conflict. The reward for Hawk against Dove remains high (10 for Hawk, 0 for Dove), and mutual Dove actions are moderately rewarded (5 points each).
+Cooperation-Focused Matrix: -2 7 2 9
+
+Description: This configuration strongly encourages cooperation by giving high rewards for mutual Dove (D, D) actions (9 points each). The penalty for mutual Hawk actions is low (-2), and Hawk against Dove yields moderate rewards (7 for Hawk, 2 for Dove).
+Intermediate Matrix: -3 6 1 7
+
+Description: This matrix offers a middle ground with balanced incentives. The penalty for mutual Hawk (H) actions is moderate (-3), and the reward for Hawk against Dove is modest (6 for Hawk, 1 for Dove). Mutual Dove actions are fairly rewarded (7 points each).
+
+
+Ejecutamos la simulacion con cada una de las matrices y 100 rondas para comparar los reusltados obetnidos.
+
+Modificaciaones y preoceos para las simulaciones:
+Modificamos el Main Agent para definir 100 rondas y ademas para que al acabar cada juego escriba en un csv los resultados de cada agente (aprovechando las estadisitcas creadas para la GUI en la primera version). El csv lleva como nombre las rondas y los parametros de l amatriz como por ejemplo: results_100_-2_7_2_9.csv
+
+Repreentacion del csv:
+(insertar imagen del excel)
+
+
+Ejecutamos la simulacion para las distitnas amtrice sobteniendo asi un csv por cada matriz. Posteriomenete con un scirp en python juntamos los datos de eoss csv en uno y con otro script creamos las graficas para mostrar los resultados.
+
+En nuestro analisis nos centramos solamente en las puntuaciones finales (ya que eran estas las q deciden la vicotira) y nos centramos en equlibrar las estrategias y sobre todo penalizar a los agentes deterministas (juegan siempre H)
+
+En la primera figura se rpesenta el resultado de cada matriz por cada agente yy ya en esa grafica se puede apreciar que los deterministas (siempore juegan D) obtienen grandes benecidios cuando se aumenta la recompensa por la cooperacion por lo que esas matrices dejarina de beneifiar a unos  deterministas para beneificar a otros y no serian adecuadas.
+
+
+La segunda figura es la mas representaiva y muestra los resultados de cada agent por cada tipo de matriz. Se hana grupado los agentes dle mismo tipo en la misma bara usando velas japonesas para marcar las difernacias entre los dos agentes del mismo tipo y poder hacer una grafica mas legible. 
+Se ha marcad con color negro a los agetenes deteministas (siempre juegan H) ya que son nuestro principal problema a solventar respecto a la matriz original.
+
+
+De izquierda a derecha el analisis es el sigueinte:
+La primera matriz penaliza fuertemente el conflicto por lo que ya pdemos observar que las puntuaciones generale son mas bahjas euq en las demas matrices. Esto es bueno ya que los mejores reusltados osn para los agentes NN y Rl (ademas para DAgent ya que al penlaizr tan fuertemente el confito se lleva mas puntos). 
+Con la matriz original sucede lo esperado, el HAgent gana por direfenrcia.
+Con la sigueinte matriz que incentiva la cooperacion un poco mas obtnemeos mejore sresltados y lso agentes NN pracitmcanet igualna a los HAgent pero sigue isn ser suficniente.
+CL asigueinte es la cooperatiion focused matrix y esta penliza seriamente al Hagent pero benficia demaiado a la detemrinista  DAgent
+La siguen es una matriz intermadi aque respecot a la orignal penaliza mucho mas a HAgent pero al auemtnar la recompensa por la cooperacion hace que DAgent sea muy potente en esta matriz
+La sigueinte es la matriz mas equlibrada y la que parece mas adecuada ya uqe los agentes NN y Rl obtienen los primeos puestso y el deterinista H esta  practicamente a l apar de las otras estrategias que no usan IA. 
+La isgueinte potencia mucho el escoger D por o que sucede lo esperado anteriormente  con la cooperation focused
+La ultima penzlia el conflicto y favorece la cooperacion en menor medida que la tercera o la cuearta por loq ue tiene unos reusltados mas favorables par alos agentes pero descompensa a HAgent con DAgent por lo que tampoco nos vale
+ A rasogso generlaes s epeude observar que los agentes NN y RL son los que mejor se adapatan yobtiene mejores reusltados en el total sde las matrice. Slo vecne en dos matrices pero son dos de las mas complejras y se mantienen en los primeros puestos durantte todas las matrices.
+Ademas, en las matriz q mas penliaza  alos detemrinas (conflict focused) obtienen el primer y tercer puesto  con mucha idfrencia osbre los demas, y en la matriz seleccionada como la mas justa y adecuada para el torneo (balanced risk and reward) obtienen los primeos puestos. 
+Com conlsucion podriamos decir que en la matriz con valores (-3,9,2,6 es la mas adecuada par aun torneo con agnetes NN y RL ya que penaliza lo suficiente a los deterministas par que no se lleven la victoria y tambien hace que otras estrategias como random, Tit for Tat o el alternar tengan peores resultados. Esto derivaria en un torneo mas intereasnate en el que los agentes tendrian que desaroollar estrategias mas diversas entre ellos.
